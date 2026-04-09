@@ -5,4 +5,9 @@ body {
   min-height: 100vh;
   margin: 0;
   background-color: #f8f9fa;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-roboto), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
