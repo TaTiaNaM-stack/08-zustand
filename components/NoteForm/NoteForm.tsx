@@ -1,4 +1,4 @@
-
+'use client';
 import css from './NoteForm.module.css'
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { object, string } from 'yup';
