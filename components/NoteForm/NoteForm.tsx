@@ -1,40 +1,23 @@
 'use client';
 import css from './NoteForm.module.css'
-import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import type {CreateNoteData} from '../../types/note';
 import { createNote } from '@/lib/api';
-import { Metadata} from "next";
-
-export const metadata: Metadata = {
-  title: "NoteHub - Create Note",
-  description: "Create a new note on NoteHub.",
-  // url: 'https://notehub.com/notes/action/create',
-  openGraph: {
-    title: 'Create a New Note on NoteHub',
-    description: 'Create a new note on NoteHub.',
-    url: 'https://notehub.com/notes/action/create',
-    siteName: 'NoteHub',
-    images: [
-      {
-        url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
-        width: 1200,
-        height: 630
-      }
-    ]
-  }
-};
+import { useRouter } from 'next/navigation';
+import { useNoteDraftStore } from '@/store/noteStore';
 
 interface NoteFormProps {
   onSubmit: () => void;
+  onClose?: () => void;
 }
 
-export default function NoteForm({ onSubmit }: NoteFormProps) {
+export default function NoteForm({ onSubmit, onClose }: NoteFormProps) {
   const { mutate } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
-      // const queryClient = useQueryClient();
-      // queryClient.invalidateQueries({ queryKey: ['notes'] });
       onSubmit();
+      clearDraft();
+      router.push('/notes/filter/all');
     },
     onError: (error) => {
       console.error('Error creating note:', error);
@@ -47,26 +30,33 @@ export default function NoteForm({ onSubmit }: NoteFormProps) {
       const tag = formData.get('tag') as string;
     mutate({ title, content, tag } as CreateNoteData);
   };
-  // const { mutate } = useMutation({
-  //   mutationFn: createNote,
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ['notes'] });
-  //     onSubmit();
-  //   },
-  //   onError: (error) => {
-  //     console.error('Error creating note:', error);
-  //     }
-  // });
-
-  // const handleSubmit = (values: CreateNoteData) => {
-  //     mutate(values);
-  //   };
+  const router = useRouter();
+  const handleCancel = () => {
+    if (onClose) {
+      onClose();
+    }
+    clearDraft();
+    router.back();
+  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setDraft({ ...draft, [name]: value });
+  };
+  const { draft, setDraft, clearDraft } = useNoteDraftStore();
 
   return (
       <form className={css.form} action={handleSubmit}>
         <div className={css.formGroup}>
           <label htmlFor="title">Title</label>
-          <input id="title" type="text" name="title" className={css.input} required />
+          <input 
+            id="title" 
+            type="text" 
+            name="title"
+            defaultValue={draft.title} 
+            onChange={handleChange}
+            className={css.input} 
+            required
+          />
         </div>
 
         <div className={css.formGroup}>
@@ -74,6 +64,8 @@ export default function NoteForm({ onSubmit }: NoteFormProps) {
           <textarea
             id="content"
             name="content"
+            onChange={handleChange}
+            defaultValue={draft.content}
             rows={8}
             className={css.textarea}
           />
@@ -85,6 +77,8 @@ export default function NoteForm({ onSubmit }: NoteFormProps) {
             required
             id="tag"
             name="tag"
+            onChange={handleChange}
+            defaultValue={draft.tag}
             className={css.select}
           >
             <option value="Todo">Todo</option>
@@ -96,7 +90,7 @@ export default function NoteForm({ onSubmit }: NoteFormProps) {
         </div>
 
         <div className={css.actions}>
-          <button type="button" className={css.cancelButton} onClick={onSubmit}>
+          <button type="button" className={css.cancelButton} onClick={handleCancel}>
             Cancel
           </button>
           <button
