@@ -1,19 +1,17 @@
 'use client';
 import css from './NoteForm.module.css'
-// import { Formik, Form, Field, ErrorMessage } from 'formik';
-// import { object, string } from 'yup';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import type {CreateNoteData} from '../../types/note';
 import { createNote } from '@/lib/api';
-import { Metadata } from 'next';
+import { Metadata} from "next";
 
 export const metadata: Metadata = {
-  title: "NoteHub",
-  description: "A simple and efficient application for managing personal notes.",
-  url: 'https://notehub.com/notes/action/create',
+  title: "NoteHub - Create Note",
+  description: "Create a new note on NoteHub.",
+  // url: 'https://notehub.com/notes/action/create',
   openGraph: {
     title: 'Create a New Note on NoteHub',
-    description: 'A simple and efficient application for managing personal notes.',
+    description: 'Create a new note on NoteHub.',
     url: 'https://notehub.com/notes/action/create',
     siteName: 'NoteHub',
     images: [
@@ -23,46 +21,42 @@ export const metadata: Metadata = {
         height: 630
       }
     ]
-
   }
-
 };
-
-// const validationSchema = object().shape({
-//   title: string()
-//   .min(3, 'Title must be at least 3 characters')
-//   .max(50, 'Title must be at most 50 characters')
-//   .required('Title is required'),
-//   content: string()
-//   .max(500, 'Content must be at most 500 characters'),
-//   tag: string().oneOf(['Todo', 'Work', 'Personal', 'Meeting', 'Shopping'], 'Invalid tag')
-//   .required('Tag is required'),
-// });
 
 interface NoteFormProps {
   onSubmit: () => void;
 }
 
 export default function NoteForm({ onSubmit }: NoteFormProps) {
-  const queryClient = useQueryClient();
-  const handleSubmit = (formData: FormData) => {
-    const values = {
-      title: formData.get('title') as string,
-      content: formData.get('content') as string,
-      tag: formData.get('tag') as string
-    };
-    mutate(values);
-  };
   const { mutate } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      // const queryClient = useQueryClient();
+      // queryClient.invalidateQueries({ queryKey: ['notes'] });
       onSubmit();
     },
     onError: (error) => {
       console.error('Error creating note:', error);
-      }
+    }
   });
+  const handleSubmit = (formData: FormData) => {
+
+      const title = formData.get('title') as string;
+      const content = formData.get('content') as string;
+      const tag = formData.get('tag') as string;
+    mutate({ title, content, tag } as CreateNoteData);
+  };
+  // const { mutate } = useMutation({
+  //   mutationFn: createNote,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ['notes'] });
+  //     onSubmit();
+  //   },
+  //   onError: (error) => {
+  //     console.error('Error creating note:', error);
+  //     }
+  // });
 
   // const handleSubmit = (values: CreateNoteData) => {
   //     mutate(values);
@@ -102,7 +96,7 @@ export default function NoteForm({ onSubmit }: NoteFormProps) {
         </div>
 
         <div className={css.actions}>
-          <button type="button" className={css.cancelButton} onClick={onClose}>
+          <button type="button" className={css.cancelButton} onClick={onSubmit}>
             Cancel
           </button>
           <button
