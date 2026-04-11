@@ -6,12 +6,10 @@ import { createNote } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { useNoteDraftStore } from '@/store/noteStore';
 
-interface NoteFormProps {
-  onSubmit: () => void;
-  onClose?: () => void;
-}
 
-export default function NoteForm({ onSubmit, onClose }: NoteFormProps) {
+export default function NoteForm() {
+  const onSubmit = (() => {});
+  const onClose = (() => {});
   const { mutate } = useMutation({
     mutationFn: createNote,
     onSuccess: () => {
