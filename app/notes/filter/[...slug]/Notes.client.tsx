@@ -26,6 +26,7 @@ export default function NotesClient({ tag }: Props) {
 
 	const debouncedSearch = useDebouncedCallback ((value: string) => {
 		setSearchQuery(value);
+		setCurrentPage(1);
 	}, 1000);
 	
   return (

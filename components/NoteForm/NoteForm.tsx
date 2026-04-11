@@ -9,6 +9,11 @@ import { useNoteDraftStore } from '@/lib/store/noteStore';
 
 export default function NoteForm() {
   const queryClient = useQueryClient();
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setDraft({ ...draft, [name]: value });
+  };
+  const { draft, setDraft, clearDraft } = useNoteDraftStore();
   const { mutate } = useMutation({
     mutationFn: createNote,
     onSuccess: () => { 
@@ -31,11 +36,7 @@ export default function NoteForm() {
   const handleCancel = () => {
     router.back();
   };
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setDraft({ ...draft, [name]: value });
-  };
-  const { draft, setDraft, clearDraft } = useNoteDraftStore();
+
 
   return (
       <form className={css.form} action={handleSubmit}>
@@ -90,6 +91,7 @@ export default function NoteForm() {
             type="submit"
             id="create"
             className={css.submitButton}
+            disabled={!draft.title || !draft.tag}
           >
             Create note
           </button>
