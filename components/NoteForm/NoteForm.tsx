@@ -35,7 +35,6 @@ export default function NoteForm({ onSubmit, onClose }: NoteFormProps) {
     if (onClose) {
       onClose();
     }
-    clearDraft();
     router.back();
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -78,7 +77,7 @@ export default function NoteForm({ onSubmit, onClose }: NoteFormProps) {
             id="tag"
             name="tag"
             onChange={handleChange}
-            defaultValue={draft.tag}
+            value={draft.tag}
             className={css.select}
           >
             <option value="Todo">Todo</option>

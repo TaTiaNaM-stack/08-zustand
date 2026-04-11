@@ -6,10 +6,6 @@ interface NoteDraftStore {
     draft: Note;
     setDraft: (note: Note) => void;
     clearDraft: () => void;
-    // setNotes: (notes: Note[]) => void;
-    // addNote: (note: Note) => void;
-    // updateNote: (updatedNote: Note) => void;
-    // deleteNote: (id: string) => void;
 }
 
 const initialDraft: Note = {
