@@ -1,6 +1,6 @@
 'use client';
 import css from './NoteForm.module.css'
-import {useMutation} from '@tanstack/react-query';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 import type {CreateNoteData} from '../../types/note';
 import { createNote } from '@/lib/api';
 import { useRouter } from 'next/navigation';
@@ -8,12 +8,11 @@ import { useNoteDraftStore } from '@/lib/store/noteStore';
 
 
 export default function NoteForm() {
-  const onSubmit = (() => {});
-  const onClose = (() => {});
+  const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: createNote,
-    onSuccess: () => {
-      onSubmit();
+    onSuccess: () => { 
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
       clearDraft();
       router.push('/notes/filter/all');
     },
@@ -30,9 +29,6 @@ export default function NoteForm() {
   };
   const router = useRouter();
   const handleCancel = () => {
-    if (onClose) {
-      onClose();
-    }
     router.back();
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -49,7 +45,7 @@ export default function NoteForm() {
             id="title" 
             type="text" 
             name="title"
-            defaultValue={draft.title} 
+            value={draft.title} 
             onChange={handleChange}
             className={css.input} 
             required
@@ -62,7 +58,7 @@ export default function NoteForm() {
             id="content"
             name="content"
             onChange={handleChange}
-            defaultValue={draft.content}
+            value={draft.content}
             rows={8}
             className={css.textarea}
           />
@@ -94,7 +90,6 @@ export default function NoteForm() {
             type="submit"
             id="create"
             className={css.submitButton}
-            disabled={false}
           >
             Create note
           </button>

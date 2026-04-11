@@ -25,11 +25,10 @@ export const useNoteDraftStore = create<NoteDraftStore>()(
     clearDraft: () =>
         set({
             draft: initialDraft,
-            setDraft: (note: Note) => set({ draft: note }),
-            clearDraft: () => set({ draft: initialDraft }),
         })}),
         {
             name: 'note-draft',
+            partialize: (state) => ({ draft: state.draft }),
         },
     ),
 );
