@@ -4,7 +4,7 @@ import {useMutation} from '@tanstack/react-query';
 import type {CreateNoteData} from '../../types/note';
 import { createNote } from '@/lib/api';
 import { useRouter } from 'next/navigation';
-import { useNoteDraftStore } from '@/store/noteStore';
+import { useNoteDraftStore } from '@/lib/store/noteStore';
 
 
 export default function NoteForm() {
