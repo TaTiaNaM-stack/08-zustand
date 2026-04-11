@@ -19,7 +19,7 @@ export default function NotesClient({ tag }: Props) {
 	const [currentPage, setCurrentPage] = useState(1);
 
 	const { data: notes, isSuccess, error } = useQuery({
-		queryKey: ['notes', {currentPage, searchQuery, tag}],
+		queryKey: ['notes', currentPage, searchQuery, tag],
 		queryFn: () => fetchNotes(searchQuery, currentPage, tag),
 		placeholderData: keepPreviousData,
 	});
@@ -44,9 +44,9 @@ export default function NotesClient({ tag }: Props) {
 			{<Link href="/notes/action/create" className={css.button}>Create Note</Link>}
 		</header>
 		{isSuccess 
-			&& notes.notes.length > 0 
-			? <NoteList notes={notes.notes} />
-			: <p className={css.message}>{error ? 'Error fetching notes' : 'No notes found'}</p>
-		}
+			&& notes.notes.length > 1 
+			? <NoteList notes={notes.notes} /> 
+			: <p className={css.message}>No notes found</p>}
+		{error && <p className={css.message}>{error ? 'Error fetching notes' : 'No notes found'}</p>}
 	</div>
   )}
