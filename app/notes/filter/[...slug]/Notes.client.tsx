@@ -34,7 +34,7 @@ export default function NotesClient({ tag }: Props) {
 		<header className={css.toolbar}>
 			<SearchBox searchQuery={searchQuery} onChange={debouncedSearch} />
 			{isSuccess
-				&& notes?.notes.length > 0 
+				&& notes?.notes.length > 1
 				&& <Pagination 
 					totalPages={notes.totalPages} 
 					currentPage={currentPage} 
@@ -44,7 +44,7 @@ export default function NotesClient({ tag }: Props) {
 			{<Link href="/notes/action/create" className={css.button}>Create Note</Link>}
 		</header>
 		{isSuccess 
-			&& notes.notes.length > 1 
+			&& notes.notes.length > 0 
 			? <NoteList notes={notes.notes} /> 
 			: <p className={css.message}>No notes found</p>}
 		{error && <p className={css.message}>{error ? 'Error fetching notes' : 'No notes found'}</p>}
